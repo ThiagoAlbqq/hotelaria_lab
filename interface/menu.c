@@ -10,4 +10,5 @@ void show_menu(const char *type) {
   printf("5. Excluir %s\n", type);
   printf("0. Voltar\n");
   printf("----------------------------------------\n");
+  printf("Escolha uma opcao: ");
 }
