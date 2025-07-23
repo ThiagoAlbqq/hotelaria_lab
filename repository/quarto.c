@@ -5,6 +5,7 @@
 
 #define MAX_LINE_LENGTH 500
 #define QUARTO_DB "./database/quarto.txt"
+#define TEMP_DB "./database/temp.txt"
 
 typedef enum {
   CASAL,
@@ -28,6 +29,7 @@ void get_rooms() {
   }
 
   char line[MAX_LINE_LENGTH];
+  int contador = 0;
   while (fgets(line, sizeof(line), arq)) {
     int id;
     int tipo_id;
@@ -49,8 +51,14 @@ void get_rooms() {
              quarto_encontrado->nome, quarto_encontrado->descricao,
              quarto_encontrado->diaria_por_pessoa);
       free(quarto_encontrado);
+      contador++;
     }
   }
+
+  if (contador == 0) {
+    printf("Nenhum quarto cadastrado\n");
+  }
+
   fclose(arq);
 }
 
@@ -133,4 +141,104 @@ void create_room() {
   fclose(arq);
 
   printf("Quarto adicionado ao arquivo com sucesso!\n");
+}
+
+void delete_room(int id_procurado) {
+  FILE *original, *temp;
+  Quarto quarto;
+  int encontrado = 0;
+
+  original = fopen(QUARTO_DB, "r");
+  if (original == NULL) {
+    printf("Erro: O arquivo %s não pode ser aberto para leitura.\n", QUARTO_DB);
+    return;
+  }
+
+  temp = fopen(TEMP_DB, "w");
+  if (temp == NULL) {
+    printf("Erro: Não foi possível criar o arquivo temporário.\n");
+    fclose(original);
+    return;
+  }
+
+  while (fscanf(original, "%d;%d;%[^;];%[^;];%f", &quarto.id, &quarto.tipo_id,
+                quarto.nome, &quarto.descricao,
+                &quarto.diaria_por_pessoa) == 5) {
+    if (quarto.id == id_procurado) {
+      encontrado = 1;
+    } else {
+      fprintf(temp, "%d;%d;%s;%s;%.2f\n", quarto.id, quarto.tipo_id,
+              quarto.nome, quarto.descricao, quarto.diaria_por_pessoa);
+    }
+  }
+
+  fclose(original);
+  fclose(temp);
+
+  if (encontrado) {
+    remove(QUARTO_DB);
+    rename(TEMP_DB, QUARTO_DB);
+    printf("Quarto com ID %d deletado com sucesso.\n", id_procurado);
+  } else {
+    remove(TEMP_DB);
+    printf("Erro: Quarto com ID %d não encontrado.\n", id_procurado);
+  }
+}
+
+void update_room(int id_procurado) {
+  FILE *original, *temp;
+  Quarto quarto_lido;
+  int encontrado = 0;
+
+  int tipo_id;
+
+  printf("\n--- TIPO DE QUARTO ---\n");
+  printf("Selecione o tipo para o quarto: \n");
+  for (int i = 0; i < NUM_QUARTOS; i++) {
+    printf("%d. %s\n", i + 1, quartos_names[i]);
+  }
+  printf("Escolha uma opcao: ");
+  scanf("%d", &tipo_id);
+  tipo_id--;
+
+  original = fopen(QUARTO_DB, "r");
+  if (original == NULL) {
+    printf("Erro: O arquivo %s não pode ser aberto para leitura.\n", QUARTO_DB);
+    return;
+  }
+
+  temp = fopen(TEMP_DB, "w");
+  if (temp == NULL) {
+    printf("Erro: Não foi possível criar o arquivo temporário.\n");
+    fclose(original);
+    return;
+  }
+
+  while (fscanf(original, "%d;%d;%[^;];%[^;];%f", &quarto_lido.id,
+                &quarto_lido.tipo_id, quarto_lido.nome, &quarto_lido.descricao,
+                &quarto_lido.diaria_por_pessoa) == 5) {
+    if (quarto_lido.id == id_procurado) {
+      fprintf(temp, "%d;%d;%s;%s;%.2f\n", quarto_lido.id, tipo_id,
+              quarto_lido.nome, quarto_lido.descricao,
+              quarto_lido.diaria_por_pessoa);
+      encontrado = 1;
+    } else {
+      fprintf(temp, "%d;%d;%s;%s;%.2f\n", quarto_lido.id, quarto_lido.tipo_id,
+              quarto_lido.nome, quarto_lido.descricao,
+              quarto_lido.diaria_por_pessoa);
+    }
+  }
+
+  fclose(original);
+  fclose(temp);
+
+  if (encontrado) {
+    remove(QUARTO_DB);
+    rename(TEMP_DB, QUARTO_DB);
+    printf("Quarto com ID %d atualizado com sucesso!\n", id_procurado);
+  } else {
+    remove(TEMP_DB);
+    printf("Erro: Quarto com ID %d não encontrado para atualização.\n",
+           id_procurado);
+  }
 }

@@ -4,6 +4,7 @@
 
 int main() {
   int choice = 0;
+  int cod;
   do {
     // Chamada da função
     show_menu("Quarto");
@@ -17,7 +18,10 @@ int main() {
       break;
     case 2:
       // Função de Buscar
-      get_room(101);
+      get_rooms();
+      printf("Digite o codigo do Quarto a ser listado: ");
+      scanf("%d", &cod);
+      get_room(cod);
       break;
     case 3:
       // Função de Buscar todos
@@ -25,9 +29,17 @@ int main() {
       break;
     case 4:
       // Função de Atualizar
+      get_rooms();
+      printf("Digite o codigo do Quarto a ser atualizado: ");
+      scanf("%d", &cod);
+      update_room(cod);
       break;
     case 5:
       // Função de Excluir
+      get_rooms();
+      printf("Digite o codigo do Quarto a ser deletado: ");
+      scanf("%d", &cod);
+      delete_room(cod);
       break;
     case 0:
       printf("Saindo do programa...\n");
