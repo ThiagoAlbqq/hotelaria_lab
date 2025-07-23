@@ -1,2 +1,1 @@
-# hotelaria_lab
-Código de gestão de um hotel usando C
+gcc main.c ./interface/menu.c ./repository/quarto.c -o programa
