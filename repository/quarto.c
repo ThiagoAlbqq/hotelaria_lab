@@ -19,7 +19,7 @@ const char *quartos_names[NUM_QUARTOS] = {
     "Quarto de casal", "Quarto de casal duplo", "Quarto de solteiro",
     "Quarto de solteiro duplo"};
 
-const int quartos_values[NUM_QUARTOS] = {200, 350, 100, 175};
+const float quartos_values[NUM_QUARTOS] = {200, 350, 100, 175};
 
 void get_rooms() {
   FILE *arq = fopen(QUARTO_DB, "r");
@@ -219,8 +219,8 @@ void update_room(int id_procurado) {
                 &quarto_lido.diaria_por_pessoa) == 5) {
     if (quarto_lido.id == id_procurado) {
       fprintf(temp, "%d;%d;%s;%s;%.2f\n", quarto_lido.id, tipo_id,
-              quarto_lido.nome, quarto_lido.descricao,
-              quarto_lido.diaria_por_pessoa);
+              quarto_lido.nome, quartos_names[tipo_id],
+              quartos_values[tipo_id]);
       encontrado = 1;
     } else {
       fprintf(temp, "%d;%d;%s;%s;%.2f\n", quarto_lido.id, quarto_lido.tipo_id,

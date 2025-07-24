@@ -9,3 +9,10 @@ typedef struct {
   int quantidade_pessoas;
   float preco_total;
 } Reserva;
+
+// Validação para caso você faça uma reserva que termina antes do inicio
+//criar
+//atualizar
+//excluir
+//buscar all
+//buscar one

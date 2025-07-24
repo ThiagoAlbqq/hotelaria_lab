@@ -1,5 +1,6 @@
 #include "./interface/menu.h"
 #include "./repository/quarto.h"
+#include "./repository/reserva.h"
 #include <stdio.h>
 
 int main() {
@@ -14,11 +15,10 @@ int main() {
     switch (choice) {
     case 1:
       // Função de Inserir
-      create_room();
+      create_reserva(1,101, 10,"2025-12-12", "2026-01-01", 10, 2000);
       break;
     case 2:
       // Função de Buscar
-      get_rooms();
       printf("Digite o codigo do Quarto a ser listado: ");
       scanf("%d", &cod);
       get_room(cod);
