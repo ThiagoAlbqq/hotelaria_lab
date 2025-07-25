@@ -1,45 +1,36 @@
 #include "./interface/menu.h"
 #include "./repository/quarto.h"
 #include "./repository/reserva.h"
+#include "./utils/clear_terminal.h"
 #include <stdio.h>
 
 int main() {
-  int choice = 0;
-  int cod;
+  int main_choice = 0;
+
   do {
-    // Chamada da função
-    show_menu("Quarto");
-    scanf("%d", &choice);
+    clearTerminal();
+    printf("--- MENU PRINCIPAL ---\n");
+    printf("1. Gerenciar Quartos\n");
+    printf("2. Gerenciar Reservas\n");
+    printf("3. Gerenciar Clientes\n");
+    printf("0. Sair\n");
+    printf("Escolha uma opção: ");
+    scanf("%d", &main_choice);
     while (getchar() != '\n')
       ;
-    switch (choice) {
+
+    switch (main_choice) {
     case 1:
-      // Função de Inserir
-      create_reserva(1,101, 10,"2025-12-12", "2026-01-01", 10, 2000);
+      // Chama a função para o menu de Quartos
+      menu_quartos();
       break;
     case 2:
-      // Função de Buscar
-      printf("Digite o codigo do Quarto a ser listado: ");
-      scanf("%d", &cod);
-      get_room(cod);
+      // Chama a função para o menu de Reservas
+      menu_reservas();
       break;
     case 3:
-      // Função de Buscar todos
-      get_rooms();
-      break;
-    case 4:
-      // Função de Atualizar
-      get_rooms();
-      printf("Digite o codigo do Quarto a ser atualizado: ");
-      scanf("%d", &cod);
-      update_room(cod);
-      break;
-    case 5:
-      // Função de Excluir
-      get_rooms();
-      printf("Digite o codigo do Quarto a ser deletado: ");
-      scanf("%d", &cod);
-      delete_room(cod);
+      // Chama a função para o menu de Clientes
+      menu_clientes();
       break;
     case 0:
       printf("Saindo do programa...\n");
@@ -48,6 +39,7 @@ int main() {
       printf("Opção inválida! Tente novamente.\n");
       break;
     }
-  } while (choice != 0);
+  } while (main_choice != 0);
+
   return 0;
 }
