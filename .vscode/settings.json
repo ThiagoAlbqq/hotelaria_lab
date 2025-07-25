@@ -2,6 +2,8 @@
   "files.associations": {
     "stdio.h": "c",
     "stdlib.h": "c",
-    "quarto.h": "c"
+    "quarto.h": "c",
+    "menu.h": "c",
+    "reserva.h": "c"
   }
 }

@@ -1,13 +1,156 @@
 #include "menu.h"
+#include "../repository/quarto.h"
+#include "../repository/reserva.h"
+#include "../utils/clear_terminal.h"
 #include <stdio.h>
 
-void show_menu(const char *type) {
-  printf("----------------- MENU -----------------\n");
-  printf("1. Inserir %s\n", type);
-  printf("2. Buscar %s\n", type);
-  printf("3. Buscar todos os %s\n");
-  printf("4. Atualizar %s\n", type);
-  printf("5. Excluir %s\n", type);
-  printf("0. Voltar\n");
-  printf("----------------------------------------\n");
+void show_crud_menu(const char *entity_name) {
+  printf("--- GERENCIAR %s ---\n", entity_name);
+  printf("1. Inserir %s\n", entity_name);
+  printf("2. Buscar %s por Código\n", entity_name);
+  printf("3. Listar Todos os %ss\n", entity_name);
+  printf("4. Atualizar %s\n", entity_name);
+  printf("5. Excluir %s\n", entity_name);
+  printf("0. Voltar ao Menu Principal\n");
+  printf("Escolha uma opção: ");
+}
+
+void menu_quartos() {
+  int choice = 0;
+  int cod;
+  clearTerminal();
+  do {
+    show_crud_menu("Quarto");
+    scanf("%d", &choice);
+    while (getchar() != '\n')
+      ;
+
+    switch (choice) {
+    case 1:
+      create_room();
+      break;
+    case 2:
+      printf("Digite o código do Quarto a ser listado: ");
+      scanf("%d", &cod);
+      while (getchar() != '\n')
+        ;
+      get_room(cod);
+      break;
+    case 3:
+      get_rooms();
+      break;
+    case 4:
+      get_rooms();
+      printf("Digite o código do Quarto a ser atualizado: ");
+      scanf("%d", &cod);
+      while (getchar() != '\n')
+        ;
+      update_room(cod);
+      break;
+    case 5:
+      get_rooms();
+      printf("Digite o código do Quarto a ser deletado: ");
+      scanf("%d", &cod);
+      while (getchar() != '\n')
+        ;
+      delete_room(cod);
+      break;
+    case 0:
+      printf("Voltando ao Menu Principal...\n");
+      break;
+    default:
+      printf("Opção inválida! Tente novamente.\n");
+      break;
+    }
+    if (choice != 0) {
+      printf("\nPressione Enter para continuar...");
+      while (getchar() != '\n')
+        ;
+      clearTerminal();
+    }
+  } while (choice != 0);
+}
+
+void menu_reservas() {
+  int choice = 0;
+  int cod;
+  do {
+    show_crud_menu("Reserva");
+    scanf("%d", &choice);
+    while (getchar() != '\n')
+      ;
+
+    switch (choice) {
+    case 1:
+      // Chamar a função de criar reserva
+      break;
+    case 2:
+      printf("Digite o código da Reserva a ser listada: ");
+      scanf("%d", &cod);
+      // Chamar a função de buscar reserva
+      break;
+    case 3:
+      // Chamar a função de listar todas as reservas
+      break;
+    case 4:
+      // Chamar a função de atualizar reserva
+      break;
+    case 5:
+      // Chamar a função de deletar reserva
+      break;
+    case 0:
+      printf("Voltando ao Menu Principal...\n");
+      break;
+    default:
+      printf("Opção inválida! Tente novamente.\n");
+      break;
+    }
+    if (choice != 0) {
+      printf("\nPressione Enter para continuar...");
+      while (getchar() != '\n')
+        ;
+    }
+  } while (choice != 0);
+}
+
+void menu_clientes() {
+  int choice = 0;
+  int cod;
+  do {
+    show_crud_menu("Cliente");
+    scanf("%d", &choice);
+    while (getchar() != '\n')
+      ;
+
+    switch (choice) {
+    case 1:
+      // Chamar a função de criar cliente
+      break;
+    case 2:
+      printf("Digite o código do Cliente a ser listado: ");
+      scanf("%d", &cod);
+      // Chamar a função de buscar cliente
+      break;
+    case 3:
+      // Chamar a função de listar todos os clientes
+      break;
+    case 4:
+      // Chamar a função de atualizar cliente
+      break;
+    case 5:
+      // Chamar a função de deletar cliente
+      break;
+    case 0:
+      printf("Voltando ao Menu Principal...\n");
+      break;
+    default:
+      printf("Opção inválida! Tente novamente.\n");
+      break;
+    }
+    if (choice != 0) {
+      printf("\nPressione Enter para continuar...");
+      while (getchar() != '\n')
+        ;
+    }
+  } while (choice != 0);
 }
