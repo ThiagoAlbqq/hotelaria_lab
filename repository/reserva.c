@@ -6,8 +6,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #define RESERVA_DB "./database/reserva.txt"
+#define TEMP "./database/temp.txt"
 
 void esperar_enter() {
   printf("\nPressione Enter para continuar...");
@@ -93,7 +95,7 @@ void create_reserva() {
     printf("Digite o ID do Quarto: ");
     scanf("%d", &nova.quarto_id);
     limpar_buffer();
-    quarto_selecionado = get_room_details(nova.quarto_id);
+    quarto_selecionado = get_room_details(nova.quarto_id, 1);
     if (quarto_selecionado.id == -1) {
       printf("O quarto informado não existe...\n");
       esperar_enter();
@@ -199,4 +201,44 @@ void create_reserva() {
 
   printf("\nReserva criada com sucesso! ID: %d\n", nova.id);
   esperar_enter();
+}
+
+void delete_reserva(int cliente) {
+  FILE *reserva = fopen(RESERVA_DB, "r");
+  FILE *arq_temp = fopen(TEMP, "w");
+
+  char line[MAX_LINE_LENGTH];
+
+  if (reserva == NULL || arq_temp == NULL) {
+    perror("Falha ao abrir o arquivo. Tente novamente!");
+    return;
+  }
+
+  while (fgets(line, sizeof(line), reserva)) {
+    char copy_line[MAX_LINE_LENGTH];
+    strcpy(copy_line, line);
+    char *token = strtok(copy_line, ";");
+    token = strtok(NULL, ";");
+    token = strtok(NULL, ";");
+
+    if (token != NULL && atoi(token) != cliente) {
+      fputs(line, arq_temp);
+    }
+  }
+
+  fclose(reserva);
+  fclose(arq_temp);
+
+  remove(RESERVA_DB);
+  rename(TEMP, RESERVA_DB);
+
+  printf("Reserva removida com sucesso");
+  return;
+}
+
+void deadline() {
+  struct tm *data_hora_atual;
+  time_t sec;
+  time(&sec);
+  data_hora_atual = localtime(&sec);
 }

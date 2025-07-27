@@ -9,6 +9,7 @@
 typedef struct {
   int id;
   char nome[MAX_NOME];
+  int entradas;
   char cpf[15];
   char telefone[MAX_TELEFONE];
   char email[MAX_EMAIL];

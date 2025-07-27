@@ -18,6 +18,8 @@ int data_valida(int dia, int mes, int ano);
 Data ler_data(const char *mensagem);
 void formatar_data(Data d, char *destino);
 void listar_clientes_mock();
+void deadline();
+void delete_reserva(int cliente);
 
 int gerar_novo_id_reserva();
 
@@ -25,6 +27,5 @@ int gerar_novo_id_reserva();
 // void get_reserva(int id_procurado);
 void create_reserva();
 // void update_reserva(int id_procurado);
-// void delete_reserva(int id_procurado);
 
 #endif
