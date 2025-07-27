@@ -25,7 +25,7 @@ int gerar_novo_id_reserva();
 // void get_reservas();
 // void get_reserva(int id_procurado);
 void create_reserva();
-// void update_reserva(int id_procurado);
-// void delete_reserva(int id_procurado);
+void update_reserva();
+void delete_reserva();
 
 #endif

@@ -204,7 +204,11 @@ void create_reserva() {
 }
 
 //função para deletar a reserva em caso do cliente desistir de reservar o quarto
-void delete_reserva(int id){
+void delete_reserva(){
+  int id;
+  printf("Digite o id da reserva:\n");
+  scanf("%d", &id);
+  
   FILE * reserva = fopen(RESERVA_DB, "r");
   FILE * arq_temp = fopen(TEMP, "w");
 
@@ -237,8 +241,11 @@ void delete_reserva(int id){
 
 //funcao para inserir informaçoes novas em uma reserva ja existente
 
-void update_reserva(int id_procurado){
+void update_reserva(){
   int opcao;
+  int id_procurado;
+  printf("Digite o id da reserva que deseja modificar:\n");
+  scanf("%d", &id_procurado);
   
   printf("Selecione o que voce quer alterar na reserva:\n");
   printf("1. Id da reserva\n");
