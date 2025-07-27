@@ -1,4 +1,5 @@
 #include "menu.h"
+#include "../repository/cliente.h"
 #include "../repository/quarto.h"
 #include "../repository/reserva.h"
 #include "../utils/clear_terminal.h"
@@ -116,6 +117,8 @@ void menu_reservas() {
 void menu_clientes() {
   int choice = 0;
   int cod;
+  int escolha_filtro;
+  clearTerminal();
   do {
     show_crud_menu("Cliente");
     scanf("%d", &choice);
@@ -124,21 +127,49 @@ void menu_clientes() {
 
     switch (choice) {
     case 1:
-      // Chamar a função de criar cliente
+      adicionar_cliente();
       break;
     case 2:
-      printf("Digite o código do Cliente a ser listado: ");
-      scanf("%d", &cod);
-      // Chamar a função de buscar cliente
+      clearTerminal();
+      do {
+        printf("--- LISTAR Clientes ---\n");
+        printf("1. Filtrar clientes por CPF\n");
+        printf("2. Filtrar clientes por EMAIL\n");
+        printf("0. Voltar ao GERENCIAR Cliente\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &escolha_filtro);
+        while (getchar() != '\n')
+          ;
+        switch (escolha_filtro) {
+        case 1:
+          listar_clientes_pelo_cpf();
+          break;
+        case 2:
+          listar_clientes_pelo_email();
+          break;
+        case 0:
+          printf("Voltando ao GERENCIAR Cliente...\n");
+          break;
+        default:
+          printf("Opção inválida! Tente novamente.\n");
+          break;
+        }
+        if (escolha_filtro != 0) {
+          printf("\nPressione Enter para continuar...");
+          while (getchar() != '\n')
+            ;
+          clearTerminal();
+        }
+      } while (escolha_filtro != 0);
       break;
     case 3:
-      // Chamar a função de listar todos os clientes
+      listar_clientes();
       break;
     case 4:
-      // Chamar a função de atualizar cliente
+      atualizar_cliente();
       break;
     case 5:
-      // Chamar a função de deletar cliente
+      remover_cliente();
       break;
     case 0:
       printf("Voltando ao Menu Principal...\n");
@@ -151,6 +182,7 @@ void menu_clientes() {
       printf("\nPressione Enter para continuar...");
       while (getchar() != '\n')
         ;
+      clearTerminal();
     }
   } while (choice != 0);
 }

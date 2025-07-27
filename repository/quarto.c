@@ -35,9 +35,10 @@ void get_rooms() {
     Quarto quarto;
     if (sscanf(line, "%d;%d;%[^;];%[^;];%f", &quarto.id, &quarto.tipo_id,
                quarto.nome, quarto.descricao, &quarto.diaria_por_pessoa) == 5) {
-      printf("ID: %d, Tipo ID: %d, Nome: %s, Descrição: %s, Diária: R$%.2f\n",
-             quarto.id, quarto.tipo_id, quarto.nome, quarto.descricao,
-             quarto.diaria_por_pessoa);
+      printf(
+          "ID: %d | Tipo ID: %d | Nome: %s | Descrição: %s | Diária: R$%.2f\n",
+          quarto.id, quarto.tipo_id, quarto.nome, quarto.descricao,
+          quarto.diaria_por_pessoa);
       contador++;
     }
   }
@@ -45,7 +46,6 @@ void get_rooms() {
   if (contador == 0) {
     printf("Nenhum quarto cadastrado.\n");
   }
-  printf("------------------------\n");
 
   fclose(arq);
 }
@@ -71,7 +71,8 @@ int get_room(int id_procurado) {
 
     if (sscanf_result == 5) {
       if (quarto.id == id_procurado) {
-        printf("ID: %d, Tipo ID: %d, Nome: %s, Descrição: %s, Diária: R$%.2f\n",
+        printf("ID: %d | Tipo ID: %d | Nome: %s | Descrição: %s | Diária: "
+               "R$%.2f\n",
                quarto.id, quarto.tipo_id, quarto.nome, quarto.descricao,
                quarto.diaria_por_pessoa);
         encontrado = 1;
@@ -83,7 +84,6 @@ int get_room(int id_procurado) {
   if (!encontrado) {
     printf("Quarto com ID %d não encontrado.\n", id_procurado);
   }
-  printf("------------------------\n");
 
   fclose(arq);
   return encontrado;
@@ -132,8 +132,8 @@ void create_room() {
   snprintf(nome, MAX_NOME, "Quarto %d", id);
 
   printf("\nQuarto a ser criado:\n");
-  printf("ID: %d, Tipo ID: %d, Nome: %s, Descrição: %s, Diária: R$%.2f\n", id,
-         tipo_id_escolhido, nome, descricao, diaria_por_pessoa);
+  printf("ID: %d | Tipo ID: %d | Nome: %s | Descrição: %s | Diária: R$%.2f\n",
+         id, tipo_id_escolhido, nome, descricao, diaria_por_pessoa);
 
   FILE *arq = fopen(QUARTO_DB, "a");
   if (arq == NULL) {

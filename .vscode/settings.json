@@ -4,6 +4,7 @@
     "stdlib.h": "c",
     "quarto.h": "c",
     "menu.h": "c",
-    "reserva.h": "c"
+    "reserva.h": "c",
+    "clear_terminal.h": "c"
   }
 }

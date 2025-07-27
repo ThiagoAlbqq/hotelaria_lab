@@ -1,5 +1,6 @@
 #ifndef RESERVA_H
 #define RESERVA_H
+#define MAX_LINE_LENGTH 500
 
 typedef struct {
   int id;

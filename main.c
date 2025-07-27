@@ -1,4 +1,5 @@
 #include "./interface/menu.h"
+#include "./repository/cliente.h"
 #include "./repository/quarto.h"
 #include "./repository/reserva.h"
 #include "./utils/clear_terminal.h"
