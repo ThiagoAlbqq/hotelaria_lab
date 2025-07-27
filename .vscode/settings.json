@@ -5,6 +5,9 @@
     "quarto.h": "c",
     "menu.h": "c",
     "reserva.h": "c",
-    "clear_terminal.h": "c"
+    "clear_terminal.h": "c",
+    "string.h": "c",
+    "cliente.h": "c",
+    "data.h": "c"
   }
 }

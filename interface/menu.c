@@ -35,7 +35,7 @@ void menu_quartos() {
       scanf("%d", &cod);
       while (getchar() != '\n')
         ;
-      get_room(cod);
+      get_room_details(cod, 0);
       break;
     case 3:
       get_rooms();
@@ -75,6 +75,7 @@ void menu_quartos() {
 void menu_reservas() {
   int choice = 0;
   int cod;
+  clearTerminal();
   do {
     show_crud_menu("Reserva");
     scanf("%d", &choice);
@@ -84,6 +85,7 @@ void menu_reservas() {
     switch (choice) {
     case 1:
       // Chamar a função de criar reserva
+      create_reserva();
       break;
     case 2:
       printf("Digite o código da Reserva a ser listada: ");
@@ -98,6 +100,7 @@ void menu_reservas() {
       break;
     case 5:
       // Chamar a função de deletar reserva
+      delete_reserva(1);
       break;
     case 0:
       printf("Voltando ao Menu Principal...\n");
@@ -110,6 +113,7 @@ void menu_reservas() {
       printf("\nPressione Enter para continuar...");
       while (getchar() != '\n')
         ;
+      clearTerminal();
     }
   } while (choice != 0);
 }
