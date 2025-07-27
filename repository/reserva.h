@@ -2,6 +2,7 @@
 #define RESERVA_H
 #define MAX_LINE_LENGTH 500
 
+#include "../utils/data.h"
 typedef struct {
   int id;
   int quarto_id;      // Refere ao Quarto
@@ -12,10 +13,18 @@ typedef struct {
   float preco_total;
 } Reserva;
 
+void esperar_enter();
+void limpar_buffer();
+int data_valida(int dia, int mes, int ano);
+Data ler_data(const char *mensagem);
+void formatar_data(Data d, char *destino);
+void listar_clientes_mock();
+
+int gerar_novo_id_reserva();
+
 // void get_reservas();
 // void get_reserva(int id_procurado);
-void create_reserva(int id, int quarto_id, int cliente_id, char *check_in,
-                    char *check_out, int quantidade_pessoas, float preco_total);
+void create_reserva();
 // void update_reserva(int id_procurado);
 // void delete_reserva(int id_procurado);
 
