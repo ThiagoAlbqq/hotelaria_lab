@@ -11,9 +11,12 @@ typedef struct {
   char nome[MAX_NOME];
   char descricao[MAX_DESC];
   float diaria_por_pessoa;
+  int capacidade;
+  int reservas;
 } Quarto;
 
 void get_rooms();
+Quarto get_room_details(int id_procurado);
 int get_room(int id_procurado);
 void create_room();
 void update_room(int id_procurado);

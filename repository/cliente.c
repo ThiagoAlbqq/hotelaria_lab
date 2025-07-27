@@ -28,6 +28,30 @@ int buscar_cliente_por_cpf(const char *cpf, Cliente *cliente_encontrado) {
   return 0; // Não encontrado
 }
 
+int buscar_cliente_por_id(int id) {
+  FILE *arq = fopen(CLIENTE_DB, "r");
+  if (arq == NULL) {
+    perror("Erro ao abrir o arquivo de Quartos");
+    return -1;
+  }
+
+  char line[MAX_LINE_LENGTH];
+  Cliente c;
+  printf("\n--- BUSCA DE CLIENTE (ID Procurado: %d) ---\n", id);
+
+  while (fgets(line, sizeof(line), arq) != NULL) {
+    if (sscanf(line, "%d;%[^;];%[^;];%[^;];%[^\n]\n", &c.id, c.nome, c.cpf,
+               c.telefone, c.email) == 5) {
+      if (c.id == id) {
+        printf("ID: %d | Nome: %s | CPF: %s | Tel: %s | Email: %s\n", c.id,
+               c.nome, c.cpf, c.telefone, c.email);
+        fclose(arq);
+        return c.id;
+      }
+    }
+  }
+}
+
 // Gera um novo ID automático
 int gerar_novo_id() {
   FILE *file = fopen(CLIENTE_DB, "r");
@@ -193,22 +217,30 @@ void atualizar_cliente() {
 }
 
 // Listar todos os clientes
-void listar_clientes() {
+int listar_clientes() {
   FILE *file = fopen(CLIENTE_DB, "r");
   if (!file) {
     printf("Nenhum cliente cadastrado ainda.\n");
-    return;
+    return 0;
   }
 
   Cliente c;
+  int contador = 0;
   printf("\n--- LISTA DE CLIENTES ---\n");
   while (fscanf(file, "%d;%[^;];%[^;];%[^;];%[^\n]\n", &c.id, c.nome, c.cpf,
                 c.telefone, c.email) == 5) {
     printf("ID: %d | Nome: %s | CPF: %s | Tel: %s | Email: %s\n", c.id, c.nome,
            c.cpf, c.telefone, c.email);
+
+    contador++;
   }
 
+  if (contador == 0) {
+    printf("Nenhum cliente cadastrado.\n");
+  }
   fclose(file);
+
+  return contador;
 }
 
 // Listar clientes pelo email
