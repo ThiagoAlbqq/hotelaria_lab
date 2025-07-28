@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-101;1;Quarto 101;Quarto de casal duplo;350.00;0;4
-1;0;Quarto 1;Quarto de casal;200.00;0;2
-=======
 102;1;Quarto 102;Quarto de casal duplo;350.00;0;4
 101;3;Quarto 101;Quarto de solteiro duplo;175.00;1;2
 103;3;Quarto 103;Quarto de solteiro duplo;175.00;0;2
->>>>>>> 673b846385b7e3a28140ccb4c5079e7f4940d44e
