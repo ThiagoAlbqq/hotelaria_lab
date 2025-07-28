@@ -26,7 +26,7 @@ Data ler_data(const char *mensagem) {
 }
 
 void formatar_data(Data d, char *destino) {
-  sprintf(destino, "%02d/%02d/%04d", d.dia, d.mes, d.ano);
+  sprintf(destino, "%04d-%02d-%02d", d.ano, d.mes, d.dia);
 }
 
 int eh_bissexto(int ano) {
