@@ -10,7 +10,7 @@ typedef struct {
   int tipo_id;
   char nome[MAX_NOME];
   char descricao[MAX_DESC];
-  float diaria_por_quarto;
+  float diaria;
   int capacidade;
   int reservas;
 } Quarto;
