@@ -386,25 +386,24 @@ void adicionar_reserva(int id_procurado) {
   FILE *original, *temp;
   Quarto quarto_lido;
   int encontrado = 0;
-  int novo_tipo_id_escolhido;
   char line[MAX_LINE_LENGTH];
 
-  printf("\n--- ATUALIZAR QUARTO (ID: %d) ---\n", id_procurado);
+  printf("\n--- ADICIONAR RESERVA (ID: %d) ---\n", id_procurado);
 
   if (!get_room(id_procurado)) {
-    printf("Quarto com ID %d não encontrado para atualização.\n", id_procurado);
+    printf("Quarto com ID %d não encontrado.\n", id_procurado);
     return;
   }
 
   original = fopen(QUARTO_DB, "r");
   if (original == NULL) {
-    perror("Erro ao abrir arquivo original de quartos para leitura");
+    perror("Erro ao abrir arquivo de leitura");
     return;
   }
 
   temp = fopen(TEMP_DB, "w");
   if (temp == NULL) {
-    perror("Erro ao criar arquivo temporário de quartos para escrita");
+    perror("Erro ao criar arquivo temporário");
     fclose(original);
     return;
   }
@@ -414,25 +413,17 @@ void adicionar_reserva(int id_procurado) {
                &quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
                &quarto_lido.diaria, &quarto_lido.reservas,
                &quarto_lido.capacidade) == 7) {
+
       if (quarto_lido.id == id_procurado) {
         quarto_lido.reservas++;
-        fprintf(temp, "%d;%d;%s;%s;%.2f;%d;%d\n", quarto_lido.id,
-                quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
-                quarto_lido.diaria, quarto_lido.reservas,
-                quarto_lido.capacidade);
         encontrado = 1;
-        quarto_lido.tipo_id = novo_tipo_id_escolhido;
-        strcpy(quarto_lido.descricao, quartos_names[novo_tipo_id_escolhido]);
-        quarto_lido.diaria = quartos_values[novo_tipo_id_escolhido];
-        quarto_lido.capacidade = quartos_capacities[novo_tipo_id_escolhido];
-      } else {
-        fprintf(temp, "%d;%d;%s;%s;%.2f;%d;%d\n", quarto_lido.id,
-                quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
-                quarto_lido.diaria, quarto_lido.reservas,
-                quarto_lido.capacidade);
       }
+
+      fprintf(temp, "%d;%d;%s;%s;%.2f;%d;%d\n", quarto_lido.id,
+              quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
+              quarto_lido.diaria, quarto_lido.reservas, quarto_lido.capacidade);
     } else {
-      fprintf(temp, "%s", line);
+      fprintf(temp, "%s", line); // linha corrompida ou inválida
     }
   }
 
@@ -442,16 +433,10 @@ void adicionar_reserva(int id_procurado) {
   if (encontrado) {
     remove(QUARTO_DB);
     rename(TEMP_DB, QUARTO_DB);
-    printf("\nQuarto com ID %d atualizado com sucesso!\n", id_procurado);
-    printf("ID: %d | Tipo ID: %d | Nome: %s | Descrição: %s | Diária: R$%.2f | "
-           "Reservas: %d | Capacidade: %d\n",
-           quarto_lido.id, quarto_lido.tipo_id, quarto_lido.nome,
-           quarto_lido.descricao, quarto_lido.diaria, quarto_lido.reservas,
-           quarto_lido.capacidade);
+    printf("\nReserva adicionada com sucesso ao quarto %d!\n", id_procurado);
   } else {
     remove(TEMP_DB);
-    printf("Erro: Quarto com ID %d não encontrado para atualização.\n",
-           id_procurado);
+    printf("Erro: Quarto com ID %d não encontrado.\n", id_procurado);
   }
 }
 
@@ -459,25 +444,24 @@ void remover_reserva(int id_procurado) {
   FILE *original, *temp;
   Quarto quarto_lido;
   int encontrado = 0;
-  int novo_tipo_id_escolhido;
   char line[MAX_LINE_LENGTH];
 
-  printf("\n--- ATUALIZAR QUARTO (ID: %d) ---\n", id_procurado);
+  printf("\n--- REMOVER RESERVA (ID: %d) ---\n", id_procurado);
 
   if (!get_room(id_procurado)) {
-    printf("Quarto com ID %d não encontrado para atualização.\n", id_procurado);
+    printf("Quarto com ID %d não encontrado.\n", id_procurado);
     return;
   }
 
   original = fopen(QUARTO_DB, "r");
   if (original == NULL) {
-    perror("Erro ao abrir arquivo original de quartos para leitura");
+    perror("Erro ao abrir arquivo de leitura");
     return;
   }
 
   temp = fopen(TEMP_DB, "w");
   if (temp == NULL) {
-    perror("Erro ao criar arquivo temporário de quartos para escrita");
+    perror("Erro ao criar arquivo temporário");
     fclose(original);
     return;
   }
@@ -487,23 +471,17 @@ void remover_reserva(int id_procurado) {
                &quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
                &quarto_lido.diaria, &quarto_lido.reservas,
                &quarto_lido.capacidade) == 7) {
+
       if (quarto_lido.id == id_procurado) {
-        quarto_lido.reservas--;
-        fprintf(temp, "%d;%d;%s;%s;%.2f;%d;%d\n", quarto_lido.id,
-                quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
-                quarto_lido.diaria, quarto_lido.reservas,
-                quarto_lido.capacidade);
+        if (quarto_lido.reservas > 0) {
+          quarto_lido.reservas--;
+        }
         encontrado = 1;
-        quarto_lido.tipo_id = novo_tipo_id_escolhido;
-        strcpy(quarto_lido.descricao, quartos_names[novo_tipo_id_escolhido]);
-        quarto_lido.diaria = quartos_values[novo_tipo_id_escolhido];
-        quarto_lido.capacidade = quartos_capacities[novo_tipo_id_escolhido];
-      } else {
-        fprintf(temp, "%d;%d;%s;%s;%.2f;%d;%d\n", quarto_lido.id,
-                quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
-                quarto_lido.diaria, quarto_lido.reservas,
-                quarto_lido.capacidade);
       }
+
+      fprintf(temp, "%d;%d;%s;%s;%.2f;%d;%d\n", quarto_lido.id,
+              quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
+              quarto_lido.diaria, quarto_lido.reservas, quarto_lido.capacidade);
     } else {
       fprintf(temp, "%s", line);
     }
@@ -515,15 +493,9 @@ void remover_reserva(int id_procurado) {
   if (encontrado) {
     remove(QUARTO_DB);
     rename(TEMP_DB, QUARTO_DB);
-    printf("\nQuarto com ID %d atualizado com sucesso!\n", id_procurado);
-    printf("ID: %d | Tipo ID: %d | Nome: %s | Descrição: %s | Diária: R$%.2f | "
-           "Reservas: %d | Capacidade: %d\n",
-           quarto_lido.id, quarto_lido.tipo_id, quarto_lido.nome,
-           quarto_lido.descricao, quarto_lido.diaria, quarto_lido.reservas,
-           quarto_lido.capacidade);
+    printf("\nReserva removida com sucesso do quarto %d!\n", id_procurado);
   } else {
     remove(TEMP_DB);
-    printf("Erro: Quarto com ID %d não encontrado para atualização.\n",
-           id_procurado);
+    printf("Erro: Quarto com ID %d não encontrado.\n", id_procurado);
   }
 }
