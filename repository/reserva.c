@@ -1,12 +1,14 @@
 #include "reserva.h"
 #include "../utils/clear_terminal.h"
 #include "../utils/data.h"
+#include "../utils/interface.h"
 #include "cliente.h"
 #include "quarto.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+<<<<<<< HEAD
 
 #define RESERVA_DB "./database/reserva.txt"
 #define TEMP "./database/temp.txt"
@@ -21,6 +23,12 @@ void limpar_buffer() {
   while (getchar() != '\n')
     ;
 }
+=======
+
+
+#define RESERVA_DB "./database/reserva.txt"
+#define TEMP "./database/temp.txt"
+>>>>>>> 673b846385b7e3a28140ccb4c5079e7f4940d44e
 
 // Gera um novo ID automático
 int gerar_novo_id_reserva() {
@@ -95,7 +103,7 @@ void create_reserva() {
     printf("Digite o ID do Quarto: ");
     scanf("%d", &nova.quarto_id);
     limpar_buffer();
-    quarto_selecionado = get_room_details(nova.quarto_id);
+    quarto_selecionado = get_room_details(nova.quarto_id, 1);
     if (quarto_selecionado.id == -1) {
       printf("O quarto informado não existe...\n");
       esperar_enter();
@@ -203,6 +211,7 @@ void create_reserva() {
   esperar_enter();
 }
 
+<<<<<<< HEAD
 //função para deletar a reserva em caso do cliente desistir de reservar o quarto
 void delete_reserva(){
   int id;
@@ -215,16 +224,39 @@ void delete_reserva(){
   char line[MAX_LINE_LENGTH];
 
   if(reserva == NULL || arq_temp == NULL){
+=======
+// função para deletar a reserva em caso do cliente desistir de reservar o
+// quarto
+void delete_reserva() {
+  int id;
+  printf("Digite o id da reserva:\n");
+  scanf("%d", &id);
+
+  FILE *reserva = fopen(RESERVA_DB, "r");
+  FILE *arq_temp = fopen(TEMP, "w");
+
+  char line[MAX_LINE_LENGTH];
+
+  if (reserva == NULL || arq_temp == NULL) {
+>>>>>>> 673b846385b7e3a28140ccb4c5079e7f4940d44e
     perror("Falha ao abrir o arquivo. Tente novamente!");
     return;
   }
 
+<<<<<<< HEAD
   while(fgets(line, sizeof(line), reserva)){
+=======
+  while (fgets(line, sizeof(line), reserva)) {
+>>>>>>> 673b846385b7e3a28140ccb4c5079e7f4940d44e
     char copy_line[MAX_LINE_LENGTH];
     strcpy(copy_line, line);
     char *token = strtok(copy_line, ";");
 
+<<<<<<< HEAD
     if(token != NULL && atoi(token) != id){
+=======
+    if (token != NULL && atoi(token) != id) {
+>>>>>>> 673b846385b7e3a28140ccb4c5079e7f4940d44e
       fputs(line, arq_temp);
     }
   }
@@ -239,14 +271,24 @@ void delete_reserva(){
   return;
 }
 
+<<<<<<< HEAD
 //funcao para inserir informaçoes novas em uma reserva ja existente
 
 void update_reserva(){
+=======
+// funcao para inserir informaçoes novas em uma reserva ja existente
+
+void update_reserva() {
+>>>>>>> 673b846385b7e3a28140ccb4c5079e7f4940d44e
   int opcao;
   int id_procurado;
   printf("Digite o id da reserva que deseja modificar:\n");
   scanf("%d", &id_procurado);
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> 673b846385b7e3a28140ccb4c5079e7f4940d44e
   printf("Selecione o que voce quer alterar na reserva:\n");
   printf("1. Id da reserva\n");
   printf("2. Id do quarto\n");
@@ -259,22 +301,39 @@ void update_reserva(){
 
   scanf("%d", &opcao);
 
+<<<<<<< HEAD
   FILE * reserva = fopen(RESERVA_DB, "r");
   FILE * arq_temp = fopen(TEMP, "w");
 
   char line[MAX_LINE_LENGTH];
 
   if(reserva == NULL || arq_temp == NULL){
+=======
+  FILE *reserva = fopen(RESERVA_DB, "r");
+  FILE *arq_temp = fopen(TEMP, "w");
+
+  char line[MAX_LINE_LENGTH];
+
+  if (reserva == NULL || arq_temp == NULL) {
+>>>>>>> 673b846385b7e3a28140ccb4c5079e7f4940d44e
     perror("Falha ao abrir o arquivo. Tente novamente!");
     return;
   }
 
+<<<<<<< HEAD
   while(fgets(line, sizeof(line), reserva)){
+=======
+  while (fgets(line, sizeof(line), reserva)) {
+>>>>>>> 673b846385b7e3a28140ccb4c5079e7f4940d44e
     char copy_line[MAX_LINE_LENGTH];
     strcpy(copy_line, line);
     char *token = strtok(copy_line, ";");
 
+<<<<<<< HEAD
     if(token != NULL && atoi(token) == id_procurado){
+=======
+    if (token != NULL && atoi(token) == id_procurado) {
+>>>>>>> 673b846385b7e3a28140ccb4c5079e7f4940d44e
       int id_lido = atoi(token);
       char *quarto_id = strtok(NULL, ";");
       char *cliente_id = strtok(NULL, ";");
@@ -283,71 +342,136 @@ void update_reserva(){
       char *qtd_pessoas = strtok(NULL, ";");
       char *preco_total = strtok(NULL, ";\n");
 
+<<<<<<< HEAD
       if(opcao == 1){
+=======
+      if (opcao == 1) {
+>>>>>>> 673b846385b7e3a28140ccb4c5079e7f4940d44e
         int novo_id;
         printf("Digite o id da reserva corrigido:\n");
         scanf("%d", &novo_id);
 
+<<<<<<< HEAD
         fprintf(arq_temp, "%d;%s;%s;%s;%s;%s;%s\n",novo_id, quarto_id, cliente_id, check_in, check_out, qtd_pessoas, preco_total);
       } 
 
       else if(opcao == 2){
+=======
+        fprintf(arq_temp, "%d;%s;%s;%s;%s;%s;%s\n", novo_id, quarto_id,
+                cliente_id, check_in, check_out, qtd_pessoas, preco_total);
+      }
+
+      else if (opcao == 2) {
+>>>>>>> 673b846385b7e3a28140ccb4c5079e7f4940d44e
         char novo_idq[50];
         printf("Digite o id do quarto corrigido:\n");
         scanf("%99s", novo_idq);
 
+<<<<<<< HEAD
         fprintf(arq_temp, "%d;%s;%s;%s;%s;%s;%s\n",id_lido, novo_idq, cliente_id, check_in, check_out, qtd_pessoas, preco_total);
       }
 
       else if(opcao == 3){
+=======
+        fprintf(arq_temp, "%d;%s;%s;%s;%s;%s;%s\n", id_lido, novo_idq,
+                cliente_id, check_in, check_out, qtd_pessoas, preco_total);
+      }
+
+      else if (opcao == 3) {
+>>>>>>> 673b846385b7e3a28140ccb4c5079e7f4940d44e
         char novo_idc[50];
         printf("Digite o id do cliente corrigido:\n");
         scanf("%99s", novo_idc);
 
+<<<<<<< HEAD
         fprintf(arq_temp, "%d;%s;%s;%s;%s;%s;%s\n",id_lido, quarto_id, novo_idc, check_in, check_out, qtd_pessoas, preco_total);
       }
 
       else if(opcao == 4){
+=======
+        fprintf(arq_temp, "%d;%s;%s;%s;%s;%s;%s\n", id_lido, quarto_id,
+                novo_idc, check_in, check_out, qtd_pessoas, preco_total);
+      }
+
+      else if (opcao == 4) {
+>>>>>>> 673b846385b7e3a28140ccb4c5079e7f4940d44e
         char novo_check_in[50];
         printf("Digite o a data corrigida do chek-in:\n");
         scanf("%99s", novo_check_in);
 
+<<<<<<< HEAD
         fprintf(arq_temp, "%d;%s;%s;%s;%s;%s;%s\n",id_lido, quarto_id, cliente_id, novo_check_in, check_out, qtd_pessoas, preco_total);
       }
 
       else if(opcao == 5){
+=======
+        fprintf(arq_temp, "%d;%s;%s;%s;%s;%s;%s\n", id_lido, quarto_id,
+                cliente_id, novo_check_in, check_out, qtd_pessoas, preco_total);
+      }
+
+      else if (opcao == 5) {
+>>>>>>> 673b846385b7e3a28140ccb4c5079e7f4940d44e
         char novo_check_out[10];
         printf("Digite a data corrigida do chek-out:\n");
         scanf("%99s", novo_check_out);
 
+<<<<<<< HEAD
         fprintf(arq_temp, "%d;%s;%s;%s;%s;%s;%s\n",id_lido, quarto_id, cliente_id, check_in, novo_check_out, qtd_pessoas, preco_total);
       }
 
       else if(opcao == 6){
+=======
+        fprintf(arq_temp, "%d;%s;%s;%s;%s;%s;%s\n", id_lido, quarto_id,
+                cliente_id, check_in, novo_check_out, qtd_pessoas, preco_total);
+      }
+
+      else if (opcao == 6) {
+>>>>>>> 673b846385b7e3a28140ccb4c5079e7f4940d44e
         char nova_qntd_pessoas[20];
         printf("Digite o quantidade de pessoas:\n");
         scanf("%99s", nova_qntd_pessoas);
 
+<<<<<<< HEAD
         fprintf(arq_temp, "%d;%s;%s;%s;%s;%s;%s\n",id_lido, quarto_id, cliente_id, check_in, check_out, nova_qntd_pessoas, preco_total);
       }
 
       else if(opcao == 7){
+=======
+        fprintf(arq_temp, "%d;%s;%s;%s;%s;%s;%s\n", id_lido, quarto_id,
+                cliente_id, check_in, check_out, nova_qntd_pessoas,
+                preco_total);
+      }
+
+      else if (opcao == 7) {
+>>>>>>> 673b846385b7e3a28140ccb4c5079e7f4940d44e
         char novo_preco_total[50];
         printf("Digite o preco total corrigido:\n");
         scanf("%99s", novo_preco_total);
 
+<<<<<<< HEAD
         fprintf(arq_temp, "%d;%s;%s;%s;%s;%s;%s\n",id_lido, quarto_id, cliente_id, check_in, check_out, qtd_pessoas, novo_preco_total);
       }
 
       else{
+=======
+        fprintf(arq_temp, "%d;%s;%s;%s;%s;%s;%s\n", id_lido, quarto_id,
+                cliente_id, check_in, check_out, qtd_pessoas, novo_preco_total);
+      }
+
+      else {
+>>>>>>> 673b846385b7e3a28140ccb4c5079e7f4940d44e
         fclose(reserva);
         fclose(arq_temp);
         remove(TEMP);
         return;
       }
 
+<<<<<<< HEAD
     } 
     else{
+=======
+    } else {
+>>>>>>> 673b846385b7e3a28140ccb4c5079e7f4940d44e
       fputs(line, arq_temp);
     }
   }

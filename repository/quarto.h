@@ -16,10 +16,13 @@ typedef struct {
 } Quarto;
 
 void get_rooms();
-Quarto get_room_details(int id_procurado);
+Quarto get_room_details(int id_procurado, int interno);
 int get_room(int id_procurado);
 void create_room();
 void update_room(int id_procurado);
 void delete_room(int id_procurado);
+void remover_reserva(int id_procurado);
+void adicionar_reserva(int id_procurado);
+void relatorio_quartos_mais_reservados();
 
 #endif

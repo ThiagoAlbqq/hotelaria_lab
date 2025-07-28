@@ -8,6 +8,7 @@
     "clear_terminal.h": "c",
     "string.h": "c",
     "cliente.h": "c",
-    "data.h": "c"
+    "data.h": "c",
+    "interface.h": "c"
   }
 }

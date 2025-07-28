@@ -9,6 +9,7 @@
 typedef struct {
   int id;
   char nome[MAX_NOME];
+  int entradas;
   char cpf[15];
   char telefone[MAX_TELEFONE];
   char email[MAX_EMAIL];
@@ -26,5 +27,6 @@ void listar_clientes_pelo_email();
 int buscar_cliente_por_id(int id);
 int buscar_cliente_por_cpf(const char *cpf, Cliente *cliente_encontrado);
 int gerar_novo_id();
+void relatorio_clientes();
 
 #endif

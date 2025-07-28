@@ -35,7 +35,7 @@ void menu_quartos() {
       scanf("%d", &cod);
       while (getchar() != '\n')
         ;
-      get_room(cod);
+      get_room_details(cod, 0);
       break;
     case 3:
       get_rooms();
@@ -97,9 +97,11 @@ void menu_reservas() {
       break;
     case 4:
       // Chamar a função de atualizar reserva
+      update_reserva();
       break;
     case 5:
       // Chamar a função de deletar reserva
+      delete_reserva();
       break;
     case 0:
       printf("Voltando ao Menu Principal...\n");
@@ -175,7 +177,7 @@ void menu_clientes() {
       remover_cliente();
       break;
     case 0:
-      printf("Voltando ao Menu Principal...\n");
+      printf("\nVoltando ao Menu Principal...\n");
       break;
     default:
       printf("Opção inválida! Tente novamente.\n");
