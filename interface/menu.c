@@ -28,7 +28,6 @@ void menu_quartos() {
 
     switch (choice) {
     case 1:
-      relatorio_quartos_mais_reservados();
       create_room();
       break;
     case 2:
