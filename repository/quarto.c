@@ -4,7 +4,7 @@
 #include <string.h>
 
 #define QUARTO_DB "./database/quarto.txt"
-#define TEMP_DB "./database/temp.txt"
+#define TEMP_DB "./database/temp_quarto.txt"
 
 void relatorio_quartos_mais_reservados() {
   FILE *file = fopen(QUARTO_DB, "r");

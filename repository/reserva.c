@@ -9,9 +9,8 @@
 #include <string.h>
 #include <time.h>
 
-
 #define RESERVA_DB "./database/reserva.txt"
-#define TEMP "./database/temp.txt"
+#define TEMP "./database/temp_reserva.txt"
 
 // Gera um novo ID automático
 int gerar_novo_id_reserva() {
@@ -27,16 +26,6 @@ int gerar_novo_id_reserva() {
   }
   fclose(file);
   return max_id + 1;
-}
-
-int get_cliente(int id) { return (id == 1 || id == 2) ? 0 : -1; }
-
-// Simulação de listar_clientes
-void listar_clientes_mock() {
-  printf("\n--- Clientes Disponíveis (Simulação) ---\n");
-  printf("ID: 1 - Cliente Teste 1\n");
-  printf("ID: 2 - Cliente Teste 2\n");
-  printf("-----------------------------------------\n");
 }
 
 int verificar_disponibilidade_quarto(int quarto_id, Data checkin,
@@ -168,16 +157,8 @@ void create_reserva() {
     }
   } while (1);
 
-  do {
-    printf("Digite o preço total da reserva: ");
-    scanf("%f", &nova.preco_total);
-    limpar_buffer();
-    if (nova.preco_total < 0) {
-      printf("O preço total não pode ser negativo. Tente novamente.\n");
-    } else {
-      break;
-    }
-  } while (1);
+  nova.preco_total = quarto_selecionado.diaria;
+  adicionar_reserva(quarto_selecionado.id);
 
   FILE *file = fopen(RESERVA_DB, "a");
   if (!file) {
@@ -191,38 +172,46 @@ void create_reserva() {
   fclose(file);
 
   printf("\nReserva criada com sucesso! ID: %d\n", nova.id);
-  esperar_enter();
 }
 
 // função para deletar a reserva em caso do cliente desistir de reservar o
 // quarto
 void delete_reserva() {
   int id;
-  printf("Digite o id da reserva:\n");
+  printf("Digite o id da reserva: ");
   scanf("%d", &id);
 
-  FILE *reserva = fopen(RESERVA_DB, "r");
-  FILE *arq_temp = fopen(TEMP, "w");
+  FILE *original = fopen(RESERVA_DB, "r");
+  FILE *temp = fopen(TEMP, "w");
 
   char line[MAX_LINE_LENGTH];
 
-  if (reserva == NULL || arq_temp == NULL) {
+  if (original == NULL || temp == NULL) {
     perror("Falha ao abrir o arquivo. Tente novamente!");
     return;
   }
 
-  while (fgets(line, sizeof(line), reserva)) {
-    char copy_line[MAX_LINE_LENGTH];
-    strcpy(copy_line, line);
-    char *token = strtok(copy_line, ";");
+  Reserva reserva;
 
-    if (token != NULL && atoi(token) != id) {
-      fputs(line, arq_temp);
+  while (fgets(line, sizeof(line), original) != NULL) {
+    if (sscanf(line, "%d;%d;%d;%[^;];%[^;];%d;%f", &reserva.id,
+               &reserva.quarto_id, &reserva.cliente_id, reserva.check_in,
+               reserva.check_out, &reserva.quantidade_pessoas,
+               &reserva.preco_total) == 7) {
+      if (id == reserva.id) {
+        remover_reserva(reserva.quarto_id);
+      } else {
+        fprintf(temp, "%d;%d;%d;%s;%s;%d;%.2f\n", reserva.id, reserva.quarto_id,
+                reserva.cliente_id, reserva.check_in, reserva.check_out,
+                reserva.quantidade_pessoas, reserva.preco_total);
+      }
+    } else {
+      fprintf(temp, "%s", line);
     }
   }
 
-  fclose(reserva);
-  fclose(arq_temp);
+  fclose(original);
+  fclose(temp);
 
   remove(RESERVA_DB);
   rename(TEMP, RESERVA_DB);
@@ -232,11 +221,10 @@ void delete_reserva() {
 }
 
 // funcao para inserir informaçoes novas em uma reserva ja existente
-
 void update_reserva() {
   int opcao;
   int id_procurado;
-  printf("Digite o id da reserva que deseja modificar:\n");
+  printf("Digite o id da reserva que deseja modificar: ");
   scanf("%d", &id_procurado);
 
   printf("Selecione o que voce quer alterar na reserva:\n");
@@ -249,6 +237,7 @@ void update_reserva() {
   printf("7. Valor total\n");
   printf("0. Voltar ao Menu Principal\n");
 
+  printf("Opção: ");
   scanf("%d", &opcao);
 
   FILE *reserva = fopen(RESERVA_DB, "r");
@@ -288,6 +277,9 @@ void update_reserva() {
         char novo_idq[50];
         printf("Digite o id do quarto corrigido:\n");
         scanf("%99s", novo_idq);
+
+        remover_reserva(atoi(quarto_id));
+        adicionar_reserva(atoi(novo_idq));
 
         fprintf(arq_temp, "%d;%s;%s;%s;%s;%s;%s\n", id_lido, novo_idq,
                 cliente_id, check_in, check_out, qtd_pessoas, preco_total);
