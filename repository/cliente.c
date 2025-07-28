@@ -1,4 +1,5 @@
 #include "cliente.h"
+#include "../utils/interface.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -147,6 +148,7 @@ void remover_cliente() {
   printf("Digite o CPF do cliente a ser removido: ");
   fgets(cpf, sizeof(cpf), stdin);
   cpf[strcspn(cpf, "\n")] = 0;
+  limpar_buffer();
 
   FILE *original = fopen(CLIENTE_DB, "r");
   FILE *temp = fopen(TEMP_DB, "w");

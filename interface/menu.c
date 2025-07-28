@@ -184,9 +184,7 @@ void menu_clientes() {
       break;
     }
     if (choice != 0) {
-      printf("\nPressione Enter para continuar...");
-      while (getchar() != '\n')
-        ;
+      esperar_enter();
       clearTerminal();
     }
   } while (choice != 0);
