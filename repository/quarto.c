@@ -20,7 +20,7 @@ void relatorio_quartos_mais_reservados() {
   while (fgets(line, sizeof(line), file) != NULL && count < 500) {
     if (sscanf(line, "%d;%d;%[^;];%[^;];%f;%d;%d", &lista[count].id,
                &lista[count].tipo_id, lista[count].nome, lista[count].descricao,
-               &lista[count].diaria_por_pessoa, &lista[count].reservas,
+               &lista[count].diaria_por_quarto, &lista[count].reservas,
                &lista[count].capacidade) == 7) {
       count++;
     } else {
@@ -52,7 +52,7 @@ void relatorio_quartos_mais_reservados() {
     printf("ID: %d | Tipo ID: %d | Nome: %s | Descrição: %s | Diária: "
            "R$%.2f | Reservas: %d | Capacidade: %d\n",
            lista[i].id, lista[i].tipo_id, lista[i].nome, lista[i].descricao,
-           lista[i].diaria_por_pessoa, lista[i].reservas, lista[i].capacidade);
+           lista[i].diaria_por_quarto, lista[i].reservas, lista[i].capacidade);
   }
   printf("===========================================\n");
 }
@@ -88,12 +88,12 @@ void get_rooms() {
   while (fgets(line, sizeof(line), arq) != NULL) {
     Quarto quarto;
     if (sscanf(line, "%d;%d;%[^;];%[^;];%f;%d;%d", &quarto.id, &quarto.tipo_id,
-               quarto.nome, quarto.descricao, &quarto.diaria_por_pessoa,
+               quarto.nome, quarto.descricao, &quarto.diaria_por_quarto,
                &quarto.reservas, &quarto.capacidade) == 7) {
       printf("ID: %d | Tipo ID: %d | Nome: %s | Descrição: %s | Diária: R$%.2f "
              "| Reservas: %d | Capacidade: %d\n",
              quarto.id, quarto.tipo_id, quarto.nome, quarto.descricao,
-             quarto.diaria_por_pessoa, quarto.reservas, quarto.capacidade);
+             quarto.diaria_por_quarto, quarto.reservas, quarto.capacidade);
       contador++;
     } else {
       fprintf(stderr, "Aviso: Linha malformada ignorada em %s: %s", QUARTO_DB,
@@ -124,14 +124,14 @@ Quarto get_room_details(int id_procurado, int interno) {
   }
   while (fgets(line, sizeof(line), arq) != NULL) {
     if (sscanf(line, "%d;%d;%[^;];%[^;];%f;%d;%d", &quarto.id, &quarto.tipo_id,
-               quarto.nome, quarto.descricao, &quarto.diaria_por_pessoa,
+               quarto.nome, quarto.descricao, &quarto.diaria_por_quarto,
                &quarto.reservas, &quarto.capacidade) == 7) {
       if (quarto.id == id_procurado) {
         if (!interno) {
           printf("ID: %d | Tipo ID: %d | Nome: %s | Descrição: %s | Diária: "
                  "R$%.2f | Reservas: %d | Capacidade: %d\n",
                  quarto.id, quarto.tipo_id, quarto.nome, quarto.descricao,
-                 quarto.diaria_por_pessoa, quarto.reservas, quarto.capacidade);
+                 quarto.diaria_por_quarto, quarto.reservas, quarto.capacidade);
         }
         fclose(arq);
         return quarto;
@@ -157,7 +157,7 @@ void create_room() {
   int tipo_id_escolhido;
   char nome[MAX_NOME];
   char descricao[MAX_DESC];
-  float diaria_por_pessoa;
+  float diaria_por_quarto;
   int capacidade;
 
   printf("\n--- CRIAR NOVO QUARTO ---\n");
@@ -205,14 +205,14 @@ void create_room() {
   } while (tipo_id_escolhido < 0 || tipo_id_escolhido >= NUM_QUARTOS);
 
   strcpy(descricao, quartos_names[tipo_id_escolhido]);
-  diaria_por_pessoa = quartos_values[tipo_id_escolhido];
+  diaria_por_quarto = quartos_values[tipo_id_escolhido];
   capacidade = quartos_capacities[tipo_id_escolhido];
   snprintf(nome, MAX_NOME, "Quarto %d", id);
 
   printf("\nQuarto a ser criado:\n");
   printf("ID: %d | Tipo ID: %d | Nome: %s | Descrição: %s | Diária: R$%.2f | "
          "Reservas: %d | Capacidade: %d\n",
-         id, tipo_id_escolhido, nome, descricao, diaria_por_pessoa, 0,
+         id, tipo_id_escolhido, nome, descricao, diaria_por_quarto, 0,
          capacidade);
 
   FILE *arq = fopen(QUARTO_DB, "a");
@@ -222,7 +222,7 @@ void create_room() {
   }
 
   fprintf(arq, "%d;%d;%s;%s;%.2f;%d;%d\n", id, tipo_id_escolhido, nome,
-          descricao, diaria_por_pessoa, 0, capacidade);
+          descricao, diaria_por_quarto, 0, capacidade);
   fclose(arq);
 
   printf("Quarto adicionado ao arquivo com sucesso!\n");
@@ -253,14 +253,14 @@ void delete_room(int id_procurado) {
   while (fgets(line, sizeof(line), original) != NULL) {
     if (sscanf(line, "%d;%d;%[^;];%[^;];%f;%d;%d", &quarto_lido.id,
                &quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
-               &quarto_lido.diaria_por_pessoa, &quarto_lido.reservas,
+               &quarto_lido.diaria_por_quarto, &quarto_lido.reservas,
                &quarto_lido.capacidade) == 7) {
       if (quarto_lido.id == id_procurado) {
         encontrado = 1;
       } else {
         fprintf(temp, "%d;%d;%s;%s;%.2f;%d;%d\n", quarto_lido.id,
                 quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
-                quarto_lido.diaria_por_pessoa, quarto_lido.reservas,
+                quarto_lido.diaria_por_quarto, quarto_lido.reservas,
                 quarto_lido.capacidade);
       }
     } else {
@@ -340,7 +340,7 @@ void update_room(int id_procurado) {
   while (fgets(line, sizeof(line), original) != NULL) {
     if (sscanf(line, "%d;%d;%[^;];%[^;];%f;%d;%d", &quarto_lido.id,
                &quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
-               &quarto_lido.diaria_por_pessoa, &quarto_lido.reservas,
+               &quarto_lido.diaria_por_quarto, &quarto_lido.reservas,
                &quarto_lido.capacidade) == 7) {
       if (quarto_lido.id == id_procurado) {
         fprintf(temp, "%d;%d;%s;%s;%.2f;%d;%d\n", quarto_lido.id,
@@ -351,12 +351,12 @@ void update_room(int id_procurado) {
         encontrado = 1;
         quarto_lido.tipo_id = novo_tipo_id_escolhido;
         strcpy(quarto_lido.descricao, quartos_names[novo_tipo_id_escolhido]);
-        quarto_lido.diaria_por_pessoa = quartos_values[novo_tipo_id_escolhido];
+        quarto_lido.diaria_por_quarto = quartos_values[novo_tipo_id_escolhido];
         quarto_lido.capacidade = quartos_capacities[novo_tipo_id_escolhido];
       } else {
         fprintf(temp, "%d;%d;%s;%s;%.2f;%d;%d\n", quarto_lido.id,
                 quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
-                quarto_lido.diaria_por_pessoa, quarto_lido.reservas,
+                quarto_lido.diaria_por_quarto, quarto_lido.reservas,
                 quarto_lido.capacidade);
       }
     } else {
@@ -374,7 +374,7 @@ void update_room(int id_procurado) {
     printf("ID: %d | Tipo ID: %d | Nome: %s | Descrição: %s | Diária: R$%.2f | "
            "Reservas: %d | Capacidade: %d\n",
            quarto_lido.id, quarto_lido.tipo_id, quarto_lido.nome,
-           quarto_lido.descricao, quarto_lido.diaria_por_pessoa,
+           quarto_lido.descricao, quarto_lido.diaria_por_quarto,
            quarto_lido.reservas, quarto_lido.capacidade);
   } else {
     remove(TEMP_DB);
@@ -413,23 +413,23 @@ void adicionar_reserva(int id_procurado) {
   while (fgets(line, sizeof(line), original) != NULL) {
     if (sscanf(line, "%d;%d;%[^;];%[^;];%f;%d;%d", &quarto_lido.id,
                &quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
-               &quarto_lido.diaria_por_pessoa, &quarto_lido.reservas,
+               &quarto_lido.diaria_por_quarto, &quarto_lido.reservas,
                &quarto_lido.capacidade) == 7) {
       if (quarto_lido.id == id_procurado) {
         quarto_lido.reservas++;
         fprintf(temp, "%d;%d;%s;%s;%.2f;%d;%d\n", quarto_lido.id,
                 quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
-                quarto_lido.diaria_por_pessoa, quarto_lido.reservas,
+                quarto_lido.diaria_por_quarto, quarto_lido.reservas,
                 quarto_lido.capacidade);
         encontrado = 1;
         quarto_lido.tipo_id = novo_tipo_id_escolhido;
         strcpy(quarto_lido.descricao, quartos_names[novo_tipo_id_escolhido]);
-        quarto_lido.diaria_por_pessoa = quartos_values[novo_tipo_id_escolhido];
+        quarto_lido.diaria_por_quarto = quartos_values[novo_tipo_id_escolhido];
         quarto_lido.capacidade = quartos_capacities[novo_tipo_id_escolhido];
       } else {
         fprintf(temp, "%d;%d;%s;%s;%.2f;%d;%d\n", quarto_lido.id,
                 quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
-                quarto_lido.diaria_por_pessoa, quarto_lido.reservas,
+                quarto_lido.diaria_por_quarto, quarto_lido.reservas,
                 quarto_lido.capacidade);
       }
     } else {
@@ -447,7 +447,7 @@ void adicionar_reserva(int id_procurado) {
     printf("ID: %d | Tipo ID: %d | Nome: %s | Descrição: %s | Diária: R$%.2f | "
            "Reservas: %d | Capacidade: %d\n",
            quarto_lido.id, quarto_lido.tipo_id, quarto_lido.nome,
-           quarto_lido.descricao, quarto_lido.diaria_por_pessoa,
+           quarto_lido.descricao, quarto_lido.diaria_por_quarto,
            quarto_lido.reservas, quarto_lido.capacidade);
   } else {
     remove(TEMP_DB);
@@ -486,23 +486,23 @@ void remover_reserva(int id_procurado) {
   while (fgets(line, sizeof(line), original) != NULL) {
     if (sscanf(line, "%d;%d;%[^;];%[^;];%f;%d;%d", &quarto_lido.id,
                &quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
-               &quarto_lido.diaria_por_pessoa, &quarto_lido.reservas,
+               &quarto_lido.diaria_por_quarto, &quarto_lido.reservas,
                &quarto_lido.capacidade) == 7) {
       if (quarto_lido.id == id_procurado) {
         quarto_lido.reservas--;
         fprintf(temp, "%d;%d;%s;%s;%.2f;%d;%d\n", quarto_lido.id,
                 quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
-                quarto_lido.diaria_por_pessoa, quarto_lido.reservas,
+                quarto_lido.diaria_por_quarto, quarto_lido.reservas,
                 quarto_lido.capacidade);
         encontrado = 1;
         quarto_lido.tipo_id = novo_tipo_id_escolhido;
         strcpy(quarto_lido.descricao, quartos_names[novo_tipo_id_escolhido]);
-        quarto_lido.diaria_por_pessoa = quartos_values[novo_tipo_id_escolhido];
+        quarto_lido.diaria_por_quarto = quartos_values[novo_tipo_id_escolhido];
         quarto_lido.capacidade = quartos_capacities[novo_tipo_id_escolhido];
       } else {
         fprintf(temp, "%d;%d;%s;%s;%.2f;%d;%d\n", quarto_lido.id,
                 quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
-                quarto_lido.diaria_por_pessoa, quarto_lido.reservas,
+                quarto_lido.diaria_por_quarto, quarto_lido.reservas,
                 quarto_lido.capacidade);
       }
     } else {
@@ -520,7 +520,7 @@ void remover_reserva(int id_procurado) {
     printf("ID: %d | Tipo ID: %d | Nome: %s | Descrição: %s | Diária: R$%.2f | "
            "Reservas: %d | Capacidade: %d\n",
            quarto_lido.id, quarto_lido.tipo_id, quarto_lido.nome,
-           quarto_lido.descricao, quarto_lido.diaria_por_pessoa,
+           quarto_lido.descricao, quarto_lido.diaria_por_quarto,
            quarto_lido.reservas, quarto_lido.capacidade);
   } else {
     remove(TEMP_DB);
