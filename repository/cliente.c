@@ -1,4 +1,3 @@
-
 #include "cliente.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,8 +13,8 @@ int buscar_cliente_por_cpf(const char *cpf, Cliente *cliente_encontrado) {
     return 0;
 
   Cliente c;
-  while (fscanf(file, "%d;%[^;];%[^;];%[^;];%[^;];%d", &c.id, c.nome, c.cpf,
-                c.telefone, c.email, c.entradas) == 6) {
+  while (fscanf(file, "%d;%[^;];%[^;];%[^;];%[^\n]\n", &c.id, c.nome, c.cpf,
+                c.telefone, c.email) == 5) {
     if (strcmp(c.cpf, cpf) == 0) {
       if (cliente_encontrado)
         *cliente_encontrado = c;
@@ -54,6 +53,8 @@ void adicionar_cliente() {
     printf("Digite o CPF: ");
     fgets(c.cpf, sizeof(c.cpf), stdin);
     c.cpf[strcspn(c.cpf, "\n")] = 0;
+    while (getchar() != '\n')
+      ;
 
     // Verifica se o CPF já está cadastrado
     if (buscar_cliente_por_cpf(c.cpf, &existente)) {
@@ -158,8 +159,8 @@ void remover_cliente() {
   Cliente c;
   int removido = 0;
 
-  while (fscanf(original, "%d;%[^;];%[^;];%[^;];%[^;];%d", &c.id, c.nome, c.cpf,
-                c.telefone, c.email, c.entradas) == 6) {
+  while (fscanf(original, "%d;%[^;];%[^;];%[^;];%[^\n]\n", &c.id, c.nome, c.cpf,
+                c.telefone, c.email) == 5) {
     if (strcmp(c.cpf, cpf) != 0) {
       fprintf(temp, "%d;%s;%s;%s;%s\n", c.id, c.nome, c.cpf, c.telefone,
               c.email);
@@ -187,6 +188,8 @@ void atualizar_cliente() {
   printf("Digite o CPF do cliente que deseja atualizar: ");
   fgets(cpf, sizeof(cpf), stdin);
   cpf[strcspn(cpf, "\n")] = 0;
+  while (getchar() != '\n')
+    ;
 
   FILE *original = fopen(CLIENTE_DB, "r");
   FILE *temp = fopen(TEMP_DB, "w");
@@ -199,8 +202,8 @@ void atualizar_cliente() {
   Cliente c;
   int atualizado = 0;
 
-  while (fscanf(original, "%d;%[^;];%[^;];%[^;];%[^;];%d", &c.id, c.nome, c.cpf,
-                c.telefone, c.email, c.entradas) == 6) {
+  while (fscanf(original, "%d;%[^;];%[^;];%[^;];%[^\n]\n", &c.id, c.nome, c.cpf,
+                c.telefone, c.email) == 5) {
     if (strcmp(c.cpf, cpf) == 0) {
       printf("Digite o novo nome: ");
       fgets(c.nome, MAX_NOME, stdin);
@@ -280,15 +283,11 @@ int listar_clientes() {
   Cliente c;
   int contador = 0;
   printf("\n--- LISTA DE CLIENTES ---\n");
-  while (fscanf(file, "%d;%[^;];%[^;];%[^;];%[^;];%d", &c.id, c.nome, c.cpf,
-                c.telefone, c.email, c.entradas) == 6) {
+  while (fscanf(file, "%d;%[^;];%[^;];%[^;];%[^\n]\n", &c.id, c.nome, c.cpf,
+                c.telefone, c.email) == 5) {
     printf("ID: %d | Nome: %s | CPF: %s | Tel: %s | Email: %s\n", c.id, c.nome,
            c.cpf, c.telefone, c.email);
     contador++;
-  }
-
-  if (contador == 0) {
-    printf("Nenhum cliente cadastrado ainda.\n");
   }
 
   fclose(file);
@@ -339,6 +338,8 @@ void listar_clientes_pelo_cpf() {
   printf("Digite o CPF do cliente que deseja verificar: ");
   fgets(cpf, sizeof(cpf), stdin);
   cpf[strcspn(cpf, "\n")] = 0;
+  while (getchar() != '\n')
+    ;
 
   Cliente c;
   int encontrado = 0;

@@ -6,6 +6,57 @@
 #define QUARTO_DB "./database/quarto.txt"
 #define TEMP_DB "./database/temp.txt"
 
+void relatorio_quartos_mais_reservados() {
+  FILE *file = fopen(QUARTO_DB, "r");
+  if (!file) {
+    printf("Erro ao abrir o arquivo de quartos.\n");
+    return;
+  }
+
+  Quarto lista[500];
+  int count = 0;
+  char line[MAX_LINE_LENGTH];
+
+  while (fgets(line, sizeof(line), file) != NULL && count < 500) {
+    if (sscanf(line, "%d;%d;%[^;];%[^;];%f;%d;%d", &lista[count].id,
+               &lista[count].tipo_id, lista[count].nome, lista[count].descricao,
+               &lista[count].diaria_por_pessoa, &lista[count].reservas,
+               &lista[count].capacidade) == 7) {
+      count++;
+    } else {
+      fprintf(stderr, "Aviso: Linha malformada ignorada em %s: %s", QUARTO_DB,
+              line);
+    }
+  }
+  fclose(file);
+
+  // Se nenhum quarto foi lido, informa e sai
+  if (count == 0) {
+    printf("\nNenhum quarto cadastrado para gerar o relatório.\n");
+    return;
+  }
+
+  // Ordenar por número de reservas (do maior para o menor)
+  for (int i = 0; i < count - 1; i++) {
+    for (int j = i + 1; j < count; j++) {
+      if (lista[i].reservas < lista[j].reservas) {
+        Quarto temp = lista[i];
+        lista[i] = lista[j];
+        lista[j] = temp;
+      }
+    }
+  }
+
+  printf("\n=== RELATÓRIO DE QUARTOS MAIS RESERVADOS ===\n");
+  for (int i = 0; i < count; i++) {
+    printf("ID: %d | Tipo ID: %d | Nome: %s | Descrição: %s | Diária: "
+           "R$%.2f | Reservas: %d | Capacidade: %d\n",
+           lista[i].id, lista[i].tipo_id, lista[i].nome, lista[i].descricao,
+           lista[i].diaria_por_pessoa, lista[i].reservas, lista[i].capacidade);
+  }
+  printf("===========================================\n");
+}
+
 typedef enum {
   CASAL,
   CASAL_DUPLO,
@@ -297,6 +348,152 @@ void update_room(int id_procurado) {
                 quartos_names[novo_tipo_id_escolhido],
                 quartos_values[novo_tipo_id_escolhido], quarto_lido.reservas,
                 quartos_capacities[novo_tipo_id_escolhido]);
+        encontrado = 1;
+        quarto_lido.tipo_id = novo_tipo_id_escolhido;
+        strcpy(quarto_lido.descricao, quartos_names[novo_tipo_id_escolhido]);
+        quarto_lido.diaria_por_pessoa = quartos_values[novo_tipo_id_escolhido];
+        quarto_lido.capacidade = quartos_capacities[novo_tipo_id_escolhido];
+      } else {
+        fprintf(temp, "%d;%d;%s;%s;%.2f;%d;%d\n", quarto_lido.id,
+                quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
+                quarto_lido.diaria_por_pessoa, quarto_lido.reservas,
+                quarto_lido.capacidade);
+      }
+    } else {
+      fprintf(temp, "%s", line);
+    }
+  }
+
+  fclose(original);
+  fclose(temp);
+
+  if (encontrado) {
+    remove(QUARTO_DB);
+    rename(TEMP_DB, QUARTO_DB);
+    printf("\nQuarto com ID %d atualizado com sucesso!\n", id_procurado);
+    printf("ID: %d | Tipo ID: %d | Nome: %s | Descrição: %s | Diária: R$%.2f | "
+           "Reservas: %d | Capacidade: %d\n",
+           quarto_lido.id, quarto_lido.tipo_id, quarto_lido.nome,
+           quarto_lido.descricao, quarto_lido.diaria_por_pessoa,
+           quarto_lido.reservas, quarto_lido.capacidade);
+  } else {
+    remove(TEMP_DB);
+    printf("Erro: Quarto com ID %d não encontrado para atualização.\n",
+           id_procurado);
+  }
+}
+
+void adicionar_reserva(int id_procurado) {
+  FILE *original, *temp;
+  Quarto quarto_lido;
+  int encontrado = 0;
+  int novo_tipo_id_escolhido;
+  char line[MAX_LINE_LENGTH];
+
+  printf("\n--- ATUALIZAR QUARTO (ID: %d) ---\n", id_procurado);
+
+  if (!get_room(id_procurado)) {
+    printf("Quarto com ID %d não encontrado para atualização.\n", id_procurado);
+    return;
+  }
+
+  original = fopen(QUARTO_DB, "r");
+  if (original == NULL) {
+    perror("Erro ao abrir arquivo original de quartos para leitura");
+    return;
+  }
+
+  temp = fopen(TEMP_DB, "w");
+  if (temp == NULL) {
+    perror("Erro ao criar arquivo temporário de quartos para escrita");
+    fclose(original);
+    return;
+  }
+
+  while (fgets(line, sizeof(line), original) != NULL) {
+    if (sscanf(line, "%d;%d;%[^;];%[^;];%f;%d;%d", &quarto_lido.id,
+               &quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
+               &quarto_lido.diaria_por_pessoa, &quarto_lido.reservas,
+               &quarto_lido.capacidade) == 7) {
+      if (quarto_lido.id == id_procurado) {
+        quarto_lido.reservas++;
+        fprintf(temp, "%d;%d;%s;%s;%.2f;%d;%d\n", quarto_lido.id,
+                quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
+                quarto_lido.diaria_por_pessoa, quarto_lido.reservas,
+                quarto_lido.capacidade);
+        encontrado = 1;
+        quarto_lido.tipo_id = novo_tipo_id_escolhido;
+        strcpy(quarto_lido.descricao, quartos_names[novo_tipo_id_escolhido]);
+        quarto_lido.diaria_por_pessoa = quartos_values[novo_tipo_id_escolhido];
+        quarto_lido.capacidade = quartos_capacities[novo_tipo_id_escolhido];
+      } else {
+        fprintf(temp, "%d;%d;%s;%s;%.2f;%d;%d\n", quarto_lido.id,
+                quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
+                quarto_lido.diaria_por_pessoa, quarto_lido.reservas,
+                quarto_lido.capacidade);
+      }
+    } else {
+      fprintf(temp, "%s", line);
+    }
+  }
+
+  fclose(original);
+  fclose(temp);
+
+  if (encontrado) {
+    remove(QUARTO_DB);
+    rename(TEMP_DB, QUARTO_DB);
+    printf("\nQuarto com ID %d atualizado com sucesso!\n", id_procurado);
+    printf("ID: %d | Tipo ID: %d | Nome: %s | Descrição: %s | Diária: R$%.2f | "
+           "Reservas: %d | Capacidade: %d\n",
+           quarto_lido.id, quarto_lido.tipo_id, quarto_lido.nome,
+           quarto_lido.descricao, quarto_lido.diaria_por_pessoa,
+           quarto_lido.reservas, quarto_lido.capacidade);
+  } else {
+    remove(TEMP_DB);
+    printf("Erro: Quarto com ID %d não encontrado para atualização.\n",
+           id_procurado);
+  }
+}
+
+void remover_reserva(int id_procurado) {
+  FILE *original, *temp;
+  Quarto quarto_lido;
+  int encontrado = 0;
+  int novo_tipo_id_escolhido;
+  char line[MAX_LINE_LENGTH];
+
+  printf("\n--- ATUALIZAR QUARTO (ID: %d) ---\n", id_procurado);
+
+  if (!get_room(id_procurado)) {
+    printf("Quarto com ID %d não encontrado para atualização.\n", id_procurado);
+    return;
+  }
+
+  original = fopen(QUARTO_DB, "r");
+  if (original == NULL) {
+    perror("Erro ao abrir arquivo original de quartos para leitura");
+    return;
+  }
+
+  temp = fopen(TEMP_DB, "w");
+  if (temp == NULL) {
+    perror("Erro ao criar arquivo temporário de quartos para escrita");
+    fclose(original);
+    return;
+  }
+
+  while (fgets(line, sizeof(line), original) != NULL) {
+    if (sscanf(line, "%d;%d;%[^;];%[^;];%f;%d;%d", &quarto_lido.id,
+               &quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
+               &quarto_lido.diaria_por_pessoa, &quarto_lido.reservas,
+               &quarto_lido.capacidade) == 7) {
+      if (quarto_lido.id == id_procurado) {
+        quarto_lido.reservas--;
+        fprintf(temp, "%d;%d;%s;%s;%.2f;%d;%d\n", quarto_lido.id,
+                quarto_lido.tipo_id, quarto_lido.nome, quarto_lido.descricao,
+                quarto_lido.diaria_por_pessoa, quarto_lido.reservas,
+                quarto_lido.capacidade);
         encontrado = 1;
         quarto_lido.tipo_id = novo_tipo_id_escolhido;
         strcpy(quarto_lido.descricao, quartos_names[novo_tipo_id_escolhido]);

@@ -1,2 +1,2 @@
 102;1;Quarto 102;Quarto de casal duplo;350.00;0;4
-101;3;Quarto 101;Quarto de solteiro duplo;175.00;0;2
+101;3;Quarto 101;Quarto de solteiro duplo;175.00;1;2

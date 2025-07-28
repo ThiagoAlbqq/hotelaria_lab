@@ -1,6 +1,7 @@
 #include "reserva.h"
 #include "../utils/clear_terminal.h"
 #include "../utils/data.h"
+#include "../utils/interface.h"
 #include "cliente.h"
 #include "quarto.h"
 #include <stdio.h>
@@ -8,19 +9,9 @@
 #include <string.h>
 #include <time.h>
 
+
 #define RESERVA_DB "./database/reserva.txt"
 #define TEMP "./database/temp.txt"
-
-void esperar_enter() {
-  printf("\nPressione Enter para continuar...");
-  while (getchar() != '\n')
-    ;
-}
-
-void limpar_buffer() {
-  while (getchar() != '\n')
-    ;
-}
 
 // Gera um novo ID automático
 int gerar_novo_id_reserva() {
@@ -203,7 +194,13 @@ void create_reserva() {
   esperar_enter();
 }
 
-void delete_reserva(int cliente) {
+// função para deletar a reserva em caso do cliente desistir de reservar o
+// quarto
+void delete_reserva() {
+  int id;
+  printf("Digite o id da reserva:\n");
+  scanf("%d", &id);
+
   FILE *reserva = fopen(RESERVA_DB, "r");
   FILE *arq_temp = fopen(TEMP, "w");
 
@@ -218,10 +215,8 @@ void delete_reserva(int cliente) {
     char copy_line[MAX_LINE_LENGTH];
     strcpy(copy_line, line);
     char *token = strtok(copy_line, ";");
-    token = strtok(NULL, ";");
-    token = strtok(NULL, ";");
 
-    if (token != NULL && atoi(token) != cliente) {
+    if (token != NULL && atoi(token) != id) {
       fputs(line, arq_temp);
     }
   }
@@ -236,9 +231,132 @@ void delete_reserva(int cliente) {
   return;
 }
 
-void deadline() {
-  struct tm *data_hora_atual;
-  time_t sec;
-  time(&sec);
-  data_hora_atual = localtime(&sec);
+// funcao para inserir informaçoes novas em uma reserva ja existente
+
+void update_reserva() {
+  int opcao;
+  int id_procurado;
+  printf("Digite o id da reserva que deseja modificar:\n");
+  scanf("%d", &id_procurado);
+
+  printf("Selecione o que voce quer alterar na reserva:\n");
+  printf("1. Id da reserva\n");
+  printf("2. Id do quarto\n");
+  printf("3. Id do cliente que reservou\n");
+  printf("4. Dia do check-in\n");
+  printf("5. Dia do Check-out\n");
+  printf("6. Quantidade de pessoas\n");
+  printf("7. Valor total\n");
+  printf("0. Voltar ao Menu Principal\n");
+
+  scanf("%d", &opcao);
+
+  FILE *reserva = fopen(RESERVA_DB, "r");
+  FILE *arq_temp = fopen(TEMP, "w");
+
+  char line[MAX_LINE_LENGTH];
+
+  if (reserva == NULL || arq_temp == NULL) {
+    perror("Falha ao abrir o arquivo. Tente novamente!");
+    return;
+  }
+
+  while (fgets(line, sizeof(line), reserva)) {
+    char copy_line[MAX_LINE_LENGTH];
+    strcpy(copy_line, line);
+    char *token = strtok(copy_line, ";");
+
+    if (token != NULL && atoi(token) == id_procurado) {
+      int id_lido = atoi(token);
+      char *quarto_id = strtok(NULL, ";");
+      char *cliente_id = strtok(NULL, ";");
+      char *check_in = strtok(NULL, ";");
+      char *check_out = strtok(NULL, ";");
+      char *qtd_pessoas = strtok(NULL, ";");
+      char *preco_total = strtok(NULL, ";\n");
+
+      if (opcao == 1) {
+        int novo_id;
+        printf("Digite o id da reserva corrigido:\n");
+        scanf("%d", &novo_id);
+
+        fprintf(arq_temp, "%d;%s;%s;%s;%s;%s;%s\n", novo_id, quarto_id,
+                cliente_id, check_in, check_out, qtd_pessoas, preco_total);
+      }
+
+      else if (opcao == 2) {
+        char novo_idq[50];
+        printf("Digite o id do quarto corrigido:\n");
+        scanf("%99s", novo_idq);
+
+        fprintf(arq_temp, "%d;%s;%s;%s;%s;%s;%s\n", id_lido, novo_idq,
+                cliente_id, check_in, check_out, qtd_pessoas, preco_total);
+      }
+
+      else if (opcao == 3) {
+        char novo_idc[50];
+        printf("Digite o id do cliente corrigido:\n");
+        scanf("%99s", novo_idc);
+
+        fprintf(arq_temp, "%d;%s;%s;%s;%s;%s;%s\n", id_lido, quarto_id,
+                novo_idc, check_in, check_out, qtd_pessoas, preco_total);
+      }
+
+      else if (opcao == 4) {
+        char novo_check_in[50];
+        printf("Digite o a data corrigida do chek-in:\n");
+        scanf("%99s", novo_check_in);
+
+        fprintf(arq_temp, "%d;%s;%s;%s;%s;%s;%s\n", id_lido, quarto_id,
+                cliente_id, novo_check_in, check_out, qtd_pessoas, preco_total);
+      }
+
+      else if (opcao == 5) {
+        char novo_check_out[10];
+        printf("Digite a data corrigida do chek-out:\n");
+        scanf("%99s", novo_check_out);
+
+        fprintf(arq_temp, "%d;%s;%s;%s;%s;%s;%s\n", id_lido, quarto_id,
+                cliente_id, check_in, novo_check_out, qtd_pessoas, preco_total);
+      }
+
+      else if (opcao == 6) {
+        char nova_qntd_pessoas[20];
+        printf("Digite o quantidade de pessoas:\n");
+        scanf("%99s", nova_qntd_pessoas);
+
+        fprintf(arq_temp, "%d;%s;%s;%s;%s;%s;%s\n", id_lido, quarto_id,
+                cliente_id, check_in, check_out, nova_qntd_pessoas,
+                preco_total);
+      }
+
+      else if (opcao == 7) {
+        char novo_preco_total[50];
+        printf("Digite o preco total corrigido:\n");
+        scanf("%99s", novo_preco_total);
+
+        fprintf(arq_temp, "%d;%s;%s;%s;%s;%s;%s\n", id_lido, quarto_id,
+                cliente_id, check_in, check_out, qtd_pessoas, novo_preco_total);
+      }
+
+      else {
+        fclose(reserva);
+        fclose(arq_temp);
+        remove(TEMP);
+        return;
+      }
+
+    } else {
+      fputs(line, arq_temp);
+    }
+  }
+
+  fclose(reserva);
+  fclose(arq_temp);
+
+  remove(RESERVA_DB);
+  rename(TEMP, RESERVA_DB);
+
+  printf("Alteracoes realizada com sucesso");
+  return;
 }

@@ -14,6 +14,8 @@ int main() {
     printf("1. Gerenciar Quartos\n");
     printf("2. Gerenciar Reservas\n");
     printf("3. Gerenciar Clientes\n");
+    printf("4. Quartos mais visitados\n");
+    printf("5. Clientes com mais reservas\n");
     printf("0. Sair\n");
     printf("Escolha uma opção: ");
     scanf("%d", &main_choice);
@@ -33,12 +35,24 @@ int main() {
       // Chama a função para o menu de Clientes
       menu_clientes();
       break;
+    case 4:
+      // Chama a função para o relatorio de quartos
+      relatorio_quartos_mais_reservados();
+      break;
+    case 5:
+      // Chama a função para o relatorio de clientes
+      relatorio_clientes();
+      break;
     case 0:
       printf("Saindo do programa...\n");
       break;
     default:
       printf("Opção inválida! Tente novamente.\n");
       break;
+    }
+    if (main_choice != 0 && (main_choice == 4 || main_choice == 5)) {
+      esperar_enter();
+      clearTerminal();
     }
   } while (main_choice != 0);
 
