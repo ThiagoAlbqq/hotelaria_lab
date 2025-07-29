@@ -1,3 +1,10 @@
-102;1;Quarto 102;Quarto de casal duplo;350.00;1;4
-101;3;Quarto 101;Quarto de solteiro duplo;175.00;0;2
+101;3;Quarto 101;Quarto de solteiro duplo;175.00;1;2
+102;1;Quarto 102;Quarto de casal duplo;350.00;2;4
 103;3;Quarto 103;Quarto de solteiro duplo;175.00;0;2
+104;0;Quarto 104;Quarto de casal;200.00;1;2
+105;2;Quarto 105;Quarto de solteiro;100.00;0;1
+106;1;Quarto 106;Quarto de casal duplo;350.00;1;4
+107;3;Quarto 107;Quarto de solteiro duplo;175.00;1;2
+108;2;Quarto 108;Quarto de solteiro;100.00;1;1
+109;2;Quarto 109;Quarto de solteiro;100.00;0;1
+110;0;Quarto 110;Quarto de casal;200.00;0;2
