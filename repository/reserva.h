@@ -17,12 +17,11 @@ void limpar_buffer();
 int data_valida(int dia, int mes, int ano);
 Data ler_data(const char *mensagem);
 void formatar_data(Data d, char *destino);
-void listar_clientes_mock();
+void get_reserva(int id_procurado);
+void get_reservas();
 
 int gerar_novo_id_reserva();
 
-// void get_reservas();
-// void get_reserva(int id_procurado);
 void create_reserva();
 void delete_reserva();
 void update_reserva();

@@ -63,6 +63,92 @@ int verificar_disponibilidade_quarto(int quarto_id, Data checkin,
   return 0; // Quarto disponível
 }
 
+// Função para procurar reserva por id
+void get_reserva(int id_procurado) {
+  FILE *reserva = fopen(RESERVA_DB, "r");
+  char line[MAX_LINE_LENGTH];
+
+  if (reserva == NULL) {
+    perror("Erro ao abrir o arquivo reservas.");
+    return;
+  }
+
+  int encontrado = 0;
+
+  while (fgets(line, sizeof(line), reserva)) {
+    char copy_line[MAX_LINE_LENGTH];
+    strcpy(copy_line, line);
+
+    char *token = strtok(copy_line, ";");
+    if (token != NULL && atoi(token) == id_procurado) {
+      // Quebra os campos
+      int id = atoi(token);
+      int quarto_id = atoi(strtok(NULL, ";"));
+      int cliente_id = atoi(strtok(NULL, ";"));
+      char *data_entrada = strtok(NULL, ";");
+      char *data_saida = strtok(NULL, ";");
+      int num_pessoas = atoi(strtok(NULL, ";"));
+      float valor_total = atof(strtok(NULL, ";"));
+
+      printf("Reserva encontrada: \n");
+      printf("ID: %d || Quarto: %d || Cliente: %d || Entrada: %s || Saída: %s "
+             "|| Pessoas: %d || Valor: R$ %.2f\n",
+             id, quarto_id, cliente_id, data_entrada, data_saida, num_pessoas,
+             valor_total);
+
+      encontrado = 1;
+      break;
+    }
+  }
+
+  if (!encontrado) {
+    printf("Falha ao encontrar reserva com ID %d.\n", id_procurado);
+  }
+
+  fclose(reserva);
+}
+
+// Listar reservas
+void get_reservas() {
+  FILE *reserva = fopen(RESERVA_DB, "r");
+  char line[MAX_LINE_LENGTH];
+
+  if (reserva == NULL) {
+    perror("Erro ao abrir o arquivo de reservas.");
+    return;
+  }
+
+  printf("Lista de Reservas:\n");
+
+  int reserva_ok = 0;
+
+  while (fgets(line, sizeof(line), reserva)) {
+    reserva_ok = 1;
+    char copy_line[MAX_LINE_LENGTH];
+    strcpy(copy_line, line);
+
+    char *token = strtok(copy_line, ";");
+    int id = atoi(token);
+    int quarto_id = atoi(strtok(NULL, ";"));
+    int cliente_id = atoi(strtok(NULL, ";"));
+    char *data_entrada = strtok(NULL, ";");
+    char *data_saida = strtok(NULL, ";");
+    int num_pessoas = atoi(strtok(NULL, ";"));
+    float valor_total = atof(strtok(NULL, ";"));
+
+    printf("ID: %d || Quarto: %d || Cliente: %d || Entrada: %s || Saída: %s || "
+           "Pessoas: %d || Valor: R$ %.2f\n",
+           id, quarto_id, cliente_id, data_entrada, data_saida, num_pessoas,
+           valor_total);
+  }
+
+  if (!reserva_ok) {
+    printf("Nenhuma reserva encontrada.\n");
+  }
+
+  fclose(reserva);
+}
+
 void create_reserva() {
   Reserva nova;
   nova.id = gerar_novo_id_reserva();

@@ -90,10 +90,13 @@ void menu_reservas() {
     case 2:
       printf("Digite o código da Reserva a ser listada: ");
       scanf("%d", &cod);
+      limpar_buffer();
       // Chamar a função de buscar reserva
+      get_reserva(cod);
       break;
     case 3:
       // Chamar a função de listar todas as reservas
+      get_reservas();
       break;
     case 4:
       // Chamar a função de atualizar reserva
